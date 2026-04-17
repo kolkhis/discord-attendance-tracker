@@ -8,3 +8,20 @@ the event.
 
 After the event, it will produce a report with this information.  
 
+
+
+## Project Structure
+Basic project structure is as follows:
+```bash
+├── README.md
+├── cmd
+│   └── bot
+└── internal
+    ├── attendance
+    ├── config
+    ├── discord
+    ├── reconcile
+    ├── report
+    └── storage
+```
+
