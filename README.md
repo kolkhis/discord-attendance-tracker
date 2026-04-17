@@ -72,3 +72,9 @@ attendance_rollups
 - PRIMARY KEY (event_id, user_id)
 ```
 
+## Resources
+
+Examples:
+
+- [Slash Commands](https://github.com/bwmarrin/discordgo/blob/master/examples/slash_commands/main.go)
+
