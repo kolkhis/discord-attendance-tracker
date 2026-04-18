@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"os/signal"
+	"syscall"
 
 	"github.com/bwmarrin/discordgo"
 )
@@ -42,6 +44,9 @@ func main() {
 	defer dg.Close()
 
 	log.Println("Bot is now running. Press CTRL-C to exit.")
+	stop := make(chan os.Signal, 1)
+	signal.Notify(stop, os.Interrupt, syscall.SIGTERM)
+	<-stop
 }
 
 func onReady(s *discordgo.Session, event *discordgo.Ready) {
