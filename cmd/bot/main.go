@@ -49,30 +49,30 @@ func main() {
 	<-stop
 }
 
-func onReady(s *discordgo.Session, event *discordgo.Ready) {
-	log.Printf("Logged in as: %v#%v", s.State.User.Username, s.State.User.Discriminator)
+func onReady(s *discordgo.Session, r *discordgo.Ready) {
+	log.Printf("Logged in as: %v#%v (User ID: %v)", s.State.User.Username, s.State.User.Discriminator, r.User.ID)
 }
 
-func onVoiceStateUpdate(s *discordgo.Session, event *discordgo.VoiceStateUpdate) {
-	log.Printf("Voice state updated for user %v in guild %v", event.UserID, event.GuildID)
+func onVoiceStateUpdate(s *discordgo.Session, v *discordgo.VoiceStateUpdate) {
+	log.Printf("Voice state updated for user %v (ID: %v) in guild %v", v.Member.User.Username, v.UserID, v.GuildID)
 }
 
-func onGuildScheduledEventCreate(s *discordgo.Session, event *discordgo.GuildScheduledEventCreate) {
-	log.Printf("Scheduled event created: %v in guild %v", event.GuildScheduledEvent.Name, event.GuildID)
+func onGuildScheduledEventCreate(s *discordgo.Session, e *discordgo.GuildScheduledEventCreate) {
+	log.Printf("Scheduled event created: %v in guild %v", e.GuildScheduledEvent.Name, e.GuildID)
 }
 
-func onGuildScheduledEventUpdate(s *discordgo.Session, event *discordgo.GuildScheduledEventUpdate) {
-	log.Printf("Scheduled event updated: %v in guild %v", event.GuildScheduledEvent.Name, event.GuildID)
+func onGuildScheduledEventUpdate(s *discordgo.Session, e *discordgo.GuildScheduledEventUpdate) {
+	log.Printf("Scheduled event updated: %v in guild %v", e.GuildScheduledEvent.Name, e.GuildID)
 }
 
-func onGuildScheduledEventDelete(s *discordgo.Session, event *discordgo.GuildScheduledEventDelete) {
-	log.Printf("Scheduled event deleted: %v in guild %v", event.GuildScheduledEvent.Name, event.GuildID)
+func onGuildScheduledEventDelete(s *discordgo.Session, e *discordgo.GuildScheduledEventDelete) {
+	log.Printf("Scheduled event deleted: %v in guild %v", e.GuildScheduledEvent.Name, e.GuildID)
 }
 
-func onGuildScheduledEventUserAdd(s *discordgo.Session, event *discordgo.GuildScheduledEventUserAdd) {
-	log.Printf("User %v added to scheduled event %v in guild %v", event.UserID, event.GuildScheduledEventID, event.GuildID)
+func onGuildScheduledEventUserAdd(s *discordgo.Session, e *discordgo.GuildScheduledEventUserAdd) {
+	log.Printf("User %v added to scheduled event %v in guild %v", e.UserID, e.GuildScheduledEventID, e.GuildID)
 }
 
-func onGuildScheduledEventUserRemove(s *discordgo.Session, event *discordgo.GuildScheduledEventUserRemove) {
-	log.Printf("User %v removed from scheduled event %v in guild %v", event.UserID, event.GuildScheduledEventID, event.GuildID)
+func onGuildScheduledEventUserRemove(s *discordgo.Session, e *discordgo.GuildScheduledEventUserRemove) {
+	log.Printf("User %v removed from scheduled event %v in guild %v", e.UserID, e.GuildScheduledEventID, e.GuildID)
 }
