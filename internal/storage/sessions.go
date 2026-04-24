@@ -32,7 +32,7 @@ INSERT INTO voice_sessions (
 	)
 
 	if err != nil {
-		return fmt.Errorf("Start Voice Session error, event=%v user=%v: %v", eventID, userID, err)
+		return fmt.Errorf("Start Voice Session error, event=%v user=%v, err=%w", eventID, userID, err)
 	}
 
 	return nil
