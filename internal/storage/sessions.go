@@ -48,16 +48,16 @@ WHERE event_id = ?
 `
 	result, err := db.conn.Exec(query, leftAt, eventID, userID)
 	if err != nil {
-		return fmt.Errorf("End voice session error: event=%v, user=%v, err=%v\n", eventID, userID, err)
+		return fmt.Errorf("End voice session error: event=%v, user=%v, err=%v", eventID, userID, err)
 	}
 
 	rows, err := result.RowsAffected()
 	if err != nil {
-		return fmt.Errorf("RowsAffected error in EndVoiceSession, event=%v, user=%v, err=%v\n", eventID, userID, err)
+		return fmt.Errorf("RowsAffected error in EndVoiceSession, event=%v, user=%v, err=%v", eventID, userID, err)
 	}
 
 	if rows == 0 {
-		return fmt.Errorf("No open voice session found. event=%v, user=%v\n", eventID, userID)
+		return fmt.Errorf("No open voice session found. event=%v, user=%v", eventID, userID)
 	}
 	return nil
 }
@@ -91,7 +91,7 @@ LIMIT 1;
 		if err == sql.ErrNoRows {
 			return nil, nil // No open voice sessions
 		}
-		return nil, fmt.Errorf("Error fetching open voice sessions: event=%v, user=%v, err=%v\n", eventID, userID, err)
+		return nil, fmt.Errorf("Error fetching open voice sessions: event=%v, user=%v, err=%v", eventID, userID, err)
 	}
 	return &s, nil
 }
