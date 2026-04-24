@@ -10,7 +10,7 @@ type Event struct {
 	GuildID            string         `json:"guild_id"`
 	ChannelID          sql.NullString `json:"channel_id"`
 	Name               string         `json:"name"`
-	EntityType         string         `json:"entity_type"` // 0 for voice, 1 for stage, 2 for external
+	EntityType         string         `json:"entity_type"` // 1=STAGE_INSTANCE, 2=VOICE, 3=EXTERNAL
 	ScheduledStartTime string         `json:"scheduled_start_time"`
 	ScheduledEndTime   sql.NullString `json:"scheduled_end_time"`
 	TrackingOpenTime   sql.NullString `json:"tracking_open_time"`
@@ -18,6 +18,12 @@ type Event struct {
 	CreatedAt          string         `json:"created_at"`
 	UpdatedAt          string         `json:"updated_at"`
 }
+
+const (
+	EntityTypeStageInstance = 1
+	EntityTypeVoice         = 2
+	EntityTypeExternal      = 3
+)
 
 func (db *DB) UpsertEvent(e *Event) error {
 	// Update event if it already exists, otherwise insert a new one
