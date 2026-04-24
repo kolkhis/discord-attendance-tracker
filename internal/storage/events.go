@@ -95,7 +95,7 @@ WHERE event_ID = ?;
 		if err == sql.ErrNoRows {
 			return nil, nil
 		}
-		return nil, fmt.Errorf("Error on get event %s: %v", eventID, err)
+		return nil, fmt.Errorf("Error on get event %s: %w", eventID, err)
 	}
 	return &e, nil
 }
@@ -122,7 +122,7 @@ ORDER_BY scheduled_start_time;
 
 	rows, err := db.conn.Query(query)
 	if err != nil {
-		return nil, fmt.Errorf("List open tracking events: %v\n", err)
+		return nil, fmt.Errorf("List open tracking events: %w", err)
 	}
 	defer rows.Close()
 
@@ -143,13 +143,13 @@ ORDER_BY scheduled_start_time;
 			&e.UpdatedAt,
 		)
 		if err != nil {
-			return nil, fmt.Errorf("Scan event row: %v", err)
+			return nil, fmt.Errorf("Scan event row: %w", err)
 		}
 		events = append(events, e)
 	}
 
 	if err := rows.Err(); err != nil {
-		return nil, fmt.Errorf("Error in interating event rows: %v\n", err)
+		return nil, fmt.Errorf("Error in interating event rows: %w", err)
 	}
 	return events, nil
 }
