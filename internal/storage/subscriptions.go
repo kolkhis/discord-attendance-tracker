@@ -13,6 +13,7 @@ type EventSubscription struct {
 
 func (db *DB) UpsertEventSubscription(eventID, userID, subscribedAt string) error {
 	// Update event subscription, or insert a new one if it isn't there
+	// Respond to GUILD_SCHEDULED_EVENT_USER_ADD with this
 	const query = `
 INSERT INTO event_subscriptions (
     event_id,
@@ -35,6 +36,8 @@ SET subscribed_at = excluded.subscribed_at;
 }
 
 func (db *DB) DeleteEventSubscription(eventID, userID, subscribedAt string) error {
+	// Delete event subscription entry
+	// Responds to GUILD_SCHEDULED_EVENT_USER_REMOVE
 	const query = `
     DELETE FROM event_subscriptions
     WHERE event_id = ?
@@ -53,6 +56,8 @@ func (db *DB) DeleteEventSubscription(eventID, userID, subscribedAt string) erro
 }
 
 func (db *DB) HasEventSubscription(eventID, userID string) (bool, error) {
+	// Returns bool saying if given user has subscription to given event
+	// Use when determining attendance
 	const query = `
 SELECT 1
 FROM event_subscriptions
@@ -73,6 +78,8 @@ LIMIT 1;
 }
 
 func (db *DB) ListEventSubscriptions(eventID string) ([]EventSubscription, error) {
+	// List all users' event subscriptions for given event
+	// Use for attendance report
 	const query = `
 SELECT
     event_id,
