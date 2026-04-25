@@ -73,5 +73,41 @@ LIMIT 1;
 }
 
 func (db *DB) ListEventSubscriptions(eventID string) ([]EventSubscription, error) {
-	return nil, nil
+	const query = `
+SELECT
+    event_id,
+    user_id,
+    subscribed_at
+FROM event_subscriptions
+WHERE event_id = ?
+ORDER BY subscribed_at;
+`
+
+	rows, err := db.conn.Query(query, eventID)
+	if err != nil {
+		return nil, fmt.Errorf("ListEventSubscriptions error, event=%v, user=%v, err=%w", eventID, userID, err)
+	}
+	defer rows.Close()
+
+	var subscriptions []EventSubscription
+
+	for rows.Next() {
+		var sub EventSubscription
+
+		err := rows.Scan(
+			&sub.EventID,
+			&sub.UserID,
+			&sub.SubscribedAt,
+		)
+		if err != nil {
+			return nil, fmt.Errorf("Scan event subscription error, event=%v, user=%v, err=%w", eventID, userID, err)
+		}
+		subscriptions = append(subscriptions, sub)
+
+	}
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("Row iteration error, event=%v, user=%v, err=%w", eventID, userID, err)
+	}
+
+	return subscriptions, nil
 }
