@@ -5,6 +5,9 @@ package storage
 
 import (
 	"fmt"
+	"os"
+	"path/filepath"
+
 	// "os"
 	// "path/filepath"
 	"database/sql"
@@ -16,9 +19,28 @@ type DB struct {
 }
 
 func Open(path string) (*DB, error) {
+	// - Create the directory for the database file if it doesn't exist
+	// - Open a connection  (creates the database file if it doesn't exist)
+	// - Create a new DB instance (our struct) and initialize the schema
+
 	fmt.Printf("Open database at path: %s\n", path)
-	// os.MkdirAll(filepath.Dir(path), 0o755) // Creates the directory for the path if it doesn't exist
-	return &DB{}, nil // Change this to return an actual database connection
+	os.MkdirAll(filepath.Dir(path), 0o755) // Creates the directory for the path if it doesn't exist
+
+	sqliteDB, err := sql.Open("sqlite", path)
+
+	if err != nil {
+		return nil, fmt.Errorf("failed to open database: %w", err)
+	}
+
+	db := &DB{conn: sqliteDB}
+	db.initSchema() // Initialize the database schema
+
+	if err := db.initSchema(); err != nil {
+		db.Close()
+		return nil, fmt.Errorf("failed to initialize database schema: %w", err)
+	}
+
+	return db, nil
 }
 
 func (db *DB) Close() error {
