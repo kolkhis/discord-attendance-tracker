@@ -120,6 +120,7 @@ WHERE tracking_open_time IS NOT NULL
 ORDER_BY scheduled_start_time;
 	`
 
+	fmt.Printf("Executing query to list open tracking events:\n%s\n", query)
 	rows, err := db.conn.Query(query)
 	if err != nil {
 		return nil, fmt.Errorf("List open tracking events: %w", err)
@@ -129,6 +130,7 @@ ORDER_BY scheduled_start_time;
 	var events []Event
 	for rows.Next() {
 		var e Event
+		fmt.Printf("Scanning event row for event_id: %s\n", e.EventID)
 		err := rows.Scan(
 			&e.EventID,
 			&e.GuildID,
@@ -154,4 +156,15 @@ ORDER_BY scheduled_start_time;
 	return events, nil
 }
 
-// func (db *DB) DeleteEvent(eventID string) error         { return nil }
+func (db *DB) DeleteEvent(eventID string) error {
+	const query = `
+DELETE FROM events
+WHERE event_id = ?;
+`
+	_, err := db.conn.Exec(query, eventID)
+	fmt.Printf("Deleted event %s\n", eventID)
+	if err != nil {
+		return fmt.Errorf("Error deleting event %s: %w", eventID, err)
+	}
+	return nil
+}
