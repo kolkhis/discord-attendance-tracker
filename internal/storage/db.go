@@ -17,11 +17,7 @@ type DB struct {
 }
 
 func Open(path string) (*DB, error) {
-	// - Create the directory for the database file if it doesn't exist
-	// - Open a connection  (creates the database file if it doesn't exist)
-	// - Create a new DB instance (our struct) and initialize the schema
-
-	fmt.Printf("Open database at path: %s\n", path)
+	fmt.Printf("Opening database at path: %s\n", path)
 	os.MkdirAll(filepath.Dir(path), 0o755)
 	sqliteDB, err := sql.Open("sqlite", path)
 	if err != nil {
@@ -41,6 +37,7 @@ func Open(path string) (*DB, error) {
 
 func (db *DB) Close() error {
 	fmt.Printf("Closing database connection\n")
+	db.conn.Close()
 	return nil // Change this to close the actual database connection
 }
 
