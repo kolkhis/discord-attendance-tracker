@@ -105,5 +105,10 @@ CREATE TABLE IF NOT EXISTS event_attendance (
 	PRIMARY KEY (event_id, user_id)
 );
 `
-	return nil // Change this to execute the actual schema initialization
+	_, err := db.conn.Exec(schema)
+	if err != nil {
+		return fmt.Errorf("Failed to initialize database schema. Error: %w", err)
+	}
+	return nil
+
 }
