@@ -92,7 +92,7 @@ ORDER BY subscribed_at;
 
 	rows, err := db.conn.Query(query, eventID)
 	if err != nil {
-		return nil, fmt.Errorf("ListEventSubscriptions error, event=%v, user=%v, err=%w", eventID, userID, err)
+		return nil, fmt.Errorf("ListEventSubscriptions error, event=%v, err=%w", eventID, err)
 	}
 	defer rows.Close()
 
@@ -107,13 +107,13 @@ ORDER BY subscribed_at;
 			&sub.SubscribedAt,
 		)
 		if err != nil {
-			return nil, fmt.Errorf("Scan event subscription error, event=%v, user=%v, err=%w", eventID, userID, err)
+			return nil, fmt.Errorf("Scan event subscription error, event=%v, err=%w", eventID, err)
 		}
 		subscriptions = append(subscriptions, sub)
 
 	}
 	if err := rows.Err(); err != nil {
-		return nil, fmt.Errorf("Row iteration error, event=%v, user=%v, err=%w", eventID, userID, err)
+		return nil, fmt.Errorf("Row iteration error, event=%v, err=%w", eventID, err)
 	}
 
 	return subscriptions, nil
