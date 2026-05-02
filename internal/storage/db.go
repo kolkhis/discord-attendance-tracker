@@ -4,14 +4,12 @@ package storage
 // All database queries should be implemented in separate files
 
 import (
+	"database/sql"
 	"fmt"
 	"os"
 	"path/filepath"
 
-	// "os"
-	// "path/filepath"
-	"database/sql"
-	// _ "modernc.org/sqlite"
+	_ "modernc.org/sqlite"
 )
 
 type DB struct {
@@ -24,16 +22,14 @@ func Open(path string) (*DB, error) {
 	// - Create a new DB instance (our struct) and initialize the schema
 
 	fmt.Printf("Open database at path: %s\n", path)
-	os.MkdirAll(filepath.Dir(path), 0o755) // Creates the directory for the path if it doesn't exist
-
+	os.MkdirAll(filepath.Dir(path), 0o755)
 	sqliteDB, err := sql.Open("sqlite", path)
-
 	if err != nil {
 		return nil, fmt.Errorf("failed to open database: %w", err)
 	}
 
 	db := &DB{conn: sqliteDB}
-	db.initSchema() // Initialize the database schema
+	db.initSchema()
 
 	if err := db.initSchema(); err != nil {
 		db.Close()
