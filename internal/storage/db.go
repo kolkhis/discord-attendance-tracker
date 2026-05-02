@@ -37,7 +37,10 @@ func Open(path string) (*DB, error) {
 
 func (db *DB) Close() error {
 	fmt.Printf("Closing database connection\n")
-	db.conn.Close()
+	err := db.conn.Close()
+	if err != nil {
+		return fmt.Errorf("failed to close database connection: %w", err)
+	}
 	return nil // Change this to close the actual database connection
 }
 
@@ -48,7 +51,6 @@ func (db *DB) Conn() error {
 
 func (db *DB) initSchema() error {
 	// Implement the database schema initialization logic here
-	fmt.Printf("Initializing database schema\n")
 	const schema = `
 CREATE TABLE IF NOT EXISTS events (
 	event_id TEXT PRIMARY KEY,
