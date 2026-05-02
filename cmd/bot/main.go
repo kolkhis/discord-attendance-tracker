@@ -8,7 +8,10 @@ import (
 	"syscall"
 
 	"github.com/bwmarrin/discordgo"
+	"github.com/kolkhis/discord-attendance-tracker/internal/storage"
 )
+
+const dbPath = "./data/bot.db"
 
 func main() {
 	fmt.Println("Starting Discord bot...")
@@ -23,6 +26,14 @@ func main() {
 		log.Fatalf("Error creating Discord session: %v", err)
 		return
 	}
+
+	db, err := storage.Open(dbPath)
+	if err != nil {
+		log.Fatalf("Error opening database: %v", err)
+		return
+	}
+	fmt.Printf("Database successfully opened at %s\n", dbPath)
+	defer db.Close()
 
 	// Request intents
 	dg.Identify.Intents = discordgo.IntentsGuilds | discordgo.IntentsGuildVoiceStates
