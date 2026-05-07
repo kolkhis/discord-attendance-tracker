@@ -124,14 +124,14 @@ ORDER_BY scheduled_start_time;
 	log.Printf("Executing query to list open tracking events:\n%s\n", query)
 	rows, err := db.conn.Query(query)
 	if err != nil {
-		return nil, fmt.Errorf("List open tracking events: %w", err)
+		return nil, fmt.Errorf("Error on list open tracking events: %w", err)
 	}
 	defer rows.Close()
 
 	var events []Event
 	for rows.Next() {
 		var e Event
-		log.Printf("Scanning event row for event_id: %s\n", e.EventID)
+		log.Printf("Scanning event row for event_id with: %s\n", e.EventID)
 		err := rows.Scan(
 			&e.EventID,
 			&e.GuildID,
@@ -146,13 +146,13 @@ ORDER_BY scheduled_start_time;
 			&e.UpdatedAt,
 		)
 		if err != nil {
-			return nil, fmt.Errorf("Scan event row: %w", err)
+			return nil, fmt.Errorf("Error on scan event row: %w", err)
 		}
 		events = append(events, e)
 	}
 
 	if err := rows.Err(); err != nil {
-		return nil, fmt.Errorf("Error in interating event rows: %w", err)
+		return nil, fmt.Errorf("Error on interating event rows: %w", err)
 	}
 	return events, nil
 }
@@ -165,7 +165,7 @@ WHERE event_id = ?;
 	_, err := db.conn.Exec(query, eventID)
 	log.Printf("Deleted event %s\n", eventID)
 	if err != nil {
-		return fmt.Errorf("Error deleting event %s: %w", eventID, err)
+		return fmt.Errorf("Error on deleting event %s: %w", eventID, err)
 	}
 	return nil
 }
