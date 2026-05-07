@@ -30,7 +30,7 @@ SET subscribed_at = excluded.subscribed_at;
 		subscribedAt,
 	)
 	if err != nil {
-		return fmt.Errorf("Err on UpsertEventSubscription, event=%v, user=%v, subscribedAt=%v, err=%w", eventID, userID, subscribedAt, err)
+		return fmt.Errorf("Error on UpsertEventSubscription, event=%v, user=%v, subscribedAt=%v, err=%w", eventID, userID, subscribedAt, err)
 	}
 	return nil
 }
@@ -50,7 +50,7 @@ func (db *DB) DeleteEventSubscription(eventID, userID, subscribedAt string) erro
 		subscribedAt,
 	)
 	if err != nil {
-		return fmt.Errorf("DeleteEventSubscription error, event=%v, user=%v, subscribedAt=%v, err=%w", eventID, userID, subscribedAt, err)
+		return fmt.Errorf("Error on DeleteEventSubscription, event=%v, user=%v, subscribedAt=%v, err=%w", eventID, userID, subscribedAt, err)
 	}
 	return nil
 }
@@ -71,7 +71,7 @@ LIMIT 1;
 		if err == sql.ErrNoRows {
 			return false, nil
 		}
-		return false, fmt.Errorf("HasEventSubscription error, event=%v, user=%v, err=%w", eventID, userID, err)
+		return false, fmt.Errorf("Error on HasEventSubscription, event=%v, user=%v, err=%w", eventID, userID, err)
 	}
 
 	return true, nil
@@ -92,7 +92,7 @@ ORDER BY subscribed_at;
 
 	rows, err := db.conn.Query(query, eventID)
 	if err != nil {
-		return nil, fmt.Errorf("ListEventSubscriptions error, event=%v, err=%w", eventID, err)
+		return nil, fmt.Errorf("Error on ListEventSubscriptions, event=%v, err=%w", eventID, err)
 	}
 	defer rows.Close()
 
@@ -107,13 +107,13 @@ ORDER BY subscribed_at;
 			&sub.SubscribedAt,
 		)
 		if err != nil {
-			return nil, fmt.Errorf("Scan event subscription error, event=%v, err=%w", eventID, err)
+			return nil, fmt.Errorf("Error on Scan event subscription, event=%v, err=%w", eventID, err)
 		}
 		subscriptions = append(subscriptions, sub)
-
 	}
+
 	if err := rows.Err(); err != nil {
-		return nil, fmt.Errorf("Row iteration error, event=%v, err=%w", eventID, err)
+		return nil, fmt.Errorf("Error on Row iteration (ListEventSubscriptions), event=%v, err=%w", eventID, err)
 	}
 
 	return subscriptions, nil
