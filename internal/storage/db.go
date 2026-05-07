@@ -22,7 +22,7 @@ func Open(path string) (*DB, error) {
 	os.MkdirAll(filepath.Dir(path), 0o755)
 	sqliteDB, err := sql.Open("sqlite", path)
 	if err != nil {
-		return nil, fmt.Errorf("failed to open database: %w", err)
+		return nil, fmt.Errorf("Failed to open database. Error: %w", err)
 	}
 	log.Printf("Database opened successfully\n")
 
@@ -31,7 +31,7 @@ func Open(path string) (*DB, error) {
 
 	if err := db.initSchema(); err != nil {
 		db.Close()
-		return nil, fmt.Errorf("failed to initialize database schema: %w", err)
+		return nil, fmt.Errorf("Failed to initialize database schema. Error: %w", err)
 	}
 
 	return db, nil
@@ -41,7 +41,7 @@ func (db *DB) Close() error {
 	log.Printf("Closing database connection\n")
 	err := db.conn.Close()
 	if err != nil {
-		return fmt.Errorf("failed to close database connection: %w", err)
+		return fmt.Errorf("Failed to close database connection. Error: %w", err)
 	}
 	log.Printf("Database connection closed successfully\n")
 	return nil // Change this to close the actual database connection
@@ -53,7 +53,7 @@ func (db *DB) Conn() error {
 }
 
 func (db *DB) initSchema() error {
-	// Implement the database schema initialization logic here
+	// Implement the database schema initialization logic
 	const schema = `
 CREATE TABLE IF NOT EXISTS events (
 	event_id TEXT PRIMARY KEY,
