@@ -37,7 +37,7 @@ There will be 4 tables in the database with the following schema (using SQLite):
 
 Stores metadata about Discord scheduled events and tracking windows used by the application.
 
-- **event_id** (`TEXT`, PK):
+- **event_id** (`TEXT`, PRIMARY KEY):
   Unique identifier for the event (Discord event ID).
 
 - **guild_id** (`TEXT`, NOT NULL):
@@ -45,6 +45,8 @@ Stores metadata about Discord scheduled events and tracking windows used by the 
 
 - **channel_id** (`TEXT`, nullable):
   ID of the voice/stage channel associated with the event.
+    - `sql.NullString` in Event struct.
+
   May be `NULL` for non-channel-based events.
 
 - **name** (`TEXT`, NOT NULL):
@@ -53,18 +55,25 @@ Stores metadata about Discord scheduled events and tracking windows used by the 
 - **entity_type** (`INTEGER`, NOT NULL):
   Type of event (e.g., voice, stage, external).
   Mirrors Discord's event type values.
+    - 1: STAGE_INSTANCE
+    - 2: VOICE
+    - 3: EXTERNAL
+        - These external events will not be tracked.
 
 - **scheduled_start_time** (`TEXT`, NOT NULL):
   Scheduled start time of the event (ISO 8601 format recommended).
 
 - **scheduled_end_time** (`TEXT`, nullable):
   Scheduled end time of the event (if defined).
+    - `sql.NullString` in Event struct.
 
 - **tracking_open_time** (`TEXT`, nullable):
   Time when attendance tracking begins (may be before scheduled start).
+    - `sql.NullString` in Event struct.
 
 - **tracking_close_time** (`TEXT`, nullable):
   Time when attendance tracking ends (may be after scheduled end).
+    - `sql.NullString` in Event struct.
 
 - **created_at** (`TEXT`, NOT NULL):
   Timestamp when this record was created in the local database.

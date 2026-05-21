@@ -4,11 +4,13 @@ package storage
 // All database queries should be implemented in separate files
 
 import (
-	"fmt"
-	// "os"
-	// "path/filepath"
 	"database/sql"
-	// _ "modernc.org/sqlite"
+	"fmt"
+	"log"
+	"os"
+	"path/filepath"
+
+	_ "modernc.org/sqlite"
 )
 
 type DB struct {
@@ -16,13 +18,32 @@ type DB struct {
 }
 
 func Open(path string) (*DB, error) {
-	fmt.Printf("Open database at path: %s\n", path)
-	// os.MkdirAll(filepath.Dir(path), 0o755) // Creates the directory for the path if it doesn't exist
-	return &DB{}, nil // Change this to return an actual database connection
+	log.Printf("Opening database at path: %s\n", path)
+	os.MkdirAll(filepath.Dir(path), 0o755)
+	sqliteDB, err := sql.Open("sqlite", path)
+	if err != nil {
+		return nil, fmt.Errorf("Failed to open database. Error: %w", err)
+	}
+	log.Printf("Database opened successfully\n")
+
+	db := &DB{conn: sqliteDB}
+	db.initSchema()
+
+	if err := db.initSchema(); err != nil {
+		db.Close()
+		return nil, fmt.Errorf("Failed to initialize database schema. Error: %w", err)
+	}
+
+	return db, nil
 }
 
 func (db *DB) Close() error {
-	fmt.Printf("Closing database connection\n")
+	log.Printf("Closing database connection\n")
+	err := db.conn.Close()
+	if err != nil {
+		return fmt.Errorf("Failed to close database connection. Error: %w", err)
+	}
+	log.Printf("Database connection closed successfully\n")
 	return nil // Change this to close the actual database connection
 }
 
@@ -32,8 +53,7 @@ func (db *DB) Conn() error {
 }
 
 func (db *DB) initSchema() error {
-	// Implement the database schema initialization logic here
-	fmt.Printf("Initializing database schema\n")
+	// Implement the database schema initialization logic
 	const schema = `
 CREATE TABLE IF NOT EXISTS events (
 	event_id TEXT PRIMARY KEY,
@@ -83,5 +103,9 @@ CREATE TABLE IF NOT EXISTS event_attendance (
 	PRIMARY KEY (event_id, user_id)
 );
 `
-	return nil // Change this to execute the actual schema initialization
+	_, err := db.conn.Exec(schema)
+	if err != nil {
+		return fmt.Errorf("Failed to initialize database schema. Error: %w", err)
+	}
+	return nil
 }

@@ -1,17 +1,19 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"os"
 	"os/signal"
 	"syscall"
 
 	"github.com/bwmarrin/discordgo"
+	"github.com/kolkhis/discord-attendance-tracker/internal/storage"
 )
 
+const dbPath = "./data/bot.db"
+
 func main() {
-	fmt.Println("Starting Discord bot...")
+	log.Println("Starting Discord bot...")
 	token := os.Getenv("DISCORD_BOT_TOKEN")
 	if token == "" {
 		log.Fatal("DISCORD_BOT_TOKEN environment variable not set")
@@ -23,6 +25,14 @@ func main() {
 		log.Fatalf("Error creating Discord session: %v", err)
 		return
 	}
+
+	db, err := storage.Open(dbPath)
+	if err != nil {
+		log.Fatalf("Error opening database: %v", err)
+		return
+	}
+	log.Printf("Database successfully opened at %s\n", dbPath)
+	defer db.Close()
 
 	// Request intents
 	dg.Identify.Intents = discordgo.IntentsGuilds | discordgo.IntentsGuildVoiceStates
@@ -44,6 +54,7 @@ func main() {
 	defer dg.Close()
 
 	log.Println("Bot is now running. Press CTRL-C to exit.")
+
 	stop := make(chan os.Signal, 1)
 	signal.Notify(stop, os.Interrupt, syscall.SIGTERM)
 	<-stop
